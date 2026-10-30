@@ -1,0 +1,88 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidStudentRecord(data) {
+      return data.keys().hasAll([
+        'id',
+        'name',
+        'registration',
+        'cohort',
+        'score',
+        'tier',
+        'completedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'id',
+        'name',
+        'registration',
+        'cohort',
+        'score',
+        'tier',
+        'enrolledAt',
+        'completedAt',
+        'status',
+        'progressQuestions',
+        'totalQuestionsCount',
+        'updatedAtMs',
+        'avgTimeSec',
+        'maxStreak',
+        'pillarScores',
+        'attemptsCount',
+        'history',
+        'mode'
+      ]) &&
+      data.id is string && data.id.size() >= 1 && data.id.size() <= 128 &&
+      data.name is string && data.name.size() >= 1 && data.name.size() <= 160 &&
+      data.registration is string && data.registration.size() <= 80 &&
+      data.cohort is string && data.cohort.size() >= 1 && data.cohort.size() <= 120 &&
+      data.score is number && data.score >= 0 && data.score <= 100 &&
+      data.tier is string && data.tier.size() <= 40 &&
+      (data.tier == 'Iniciante' || data.tier == 'Intermediário' || data.tier == 'Avançado') &&
+      data.completedAt is string && data.completedAt.size() <= 40 &&
+      (!('enrolledAt' in data) || (data.enrolledAt is string && data.enrolledAt.size() <= 40)) &&
+      (!('status' in data) || (data.status is string && data.status.size() <= 40)) &&
+      (!('progressQuestions' in data) || (data.progressQuestions is number && data.progressQuestions >= 0 && data.progressQuestions <= 50)) &&
+      (!('totalQuestionsCount' in data) || (data.totalQuestionsCount is number && data.totalQuestionsCount >= 1 && data.totalQuestionsCount <= 50)) &&
+      (!('updatedAtMs' in data) || (data.updatedAtMs is number && data.updatedAtMs >= 0)) &&
+      (!('avgTimeSec' in data) || (data.avgTimeSec is number && data.avgTimeSec >= 0 && data.avgTimeSec <= 3600)) &&
+      (!('maxStreak' in data) || (data.maxStreak is number && data.maxStreak >= 0 && data.maxStreak <= 50)) &&
+      (!('attemptsCount' in data) || (data.attemptsCount is number && data.attemptsCount >= 1 && data.attemptsCount <= 500)) &&
+      (!('mode' in data) || (data.mode is string && data.mode.size() <= 40)) &&
+      (!('pillarScores' in data) || data.pillarScores is map) &&
+      (!('history' in data) || (data.history is list && data.history.size() <= 50));
+    }
+
+    match /test/{docId} {
+      allow read: if true;
+    }
+
+    match /roster/{studentId} {
+      allow get: if isValidId(studentId);
+      allow list: if true;
+      allow create: if isValidId(studentId) &&
+        isValidStudentRecord(incoming()) &&
+        incoming().id == studentId;
+      allow update: if isValidId(studentId) &&
+        isValidStudentRecord(incoming()) &&
+        incoming().id == existing().id;
+      allow delete: if isValidId(studentId);
+    }
+  }
+}

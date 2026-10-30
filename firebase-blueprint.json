@@ -1,0 +1,96 @@
+{
+  "entities": {
+    "StudentRecord": {
+      "title": "StudentRecord",
+      "description": "Military student diagnostic evaluation record in CAS PMPE 2026 DT-SEI.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique student record identifier",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Rank and war name of the military officer",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "registration": {
+          "type": "string",
+          "description": "Military registration or Expresso.PE login",
+          "maxLength": 80
+        },
+        "cohort": {
+          "type": "string",
+          "description": "Pelotao or Turma CAS",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "score": {
+          "type": "number",
+          "description": "Latest evaluation score (0 to 100)"
+        },
+        "tier": {
+          "type": "string",
+          "description": "Diagnostic proficiency tier",
+          "enum": ["Iniciante", "Intermediário", "Avançado"],
+          "maxLength": 40
+        },
+        "enrolledAt": {
+          "type": "string",
+          "description": "Initial access time HH:MM",
+          "maxLength": 40
+        },
+        "completedAt": {
+          "type": "string",
+          "description": "Last completion time HH:MM",
+          "maxLength": 40
+        },
+        "status": {
+          "type": "string",
+          "description": "Current mission status",
+          "enum": ["Em Missão", "Concluído"],
+          "maxLength": 40
+        },
+        "progressQuestions": {
+          "type": "number",
+          "description": "Number of answered questions in current session"
+        },
+        "totalQuestionsCount": {
+          "type": "number",
+          "description": "Total number of questions in the challenge"
+        },
+        "updatedAtMs": {
+          "type": "number",
+          "description": "Last update timestamp in milliseconds"
+        },
+        "avgTimeSec": {
+          "type": "number",
+          "description": "Average response time per question in seconds"
+        },
+        "maxStreak": {
+          "type": "number",
+          "description": "Maximum consecutive correct answers"
+        },
+        "attemptsCount": {
+          "type": "number",
+          "description": "Total number of attempts by the student"
+        },
+        "mode": {
+          "type": "string",
+          "description": "Mode in which the test was performed (Oficial or Treinamento)",
+          "maxLength": 40
+        }
+      },
+      "required": ["id", "name", "registration", "cohort", "score", "tier", "completedAt"]
+    }
+  },
+  "firestore": {
+    "/roster/{studentId}": {
+      "schema": "StudentRecord",
+      "description": "Collective public class roster storing all military students who logged in and completed or started the DT-SEI diagnostic evaluation."
+    }
+  }
+}

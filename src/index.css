@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .font-mono-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Animações suaves de fade-in e destaque de atividade recente para o Quadro Geral */
+@keyframes tableSmoothFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rowRecentHighlight {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+    background-color: rgba(245, 158, 11, 0.45);
+    box-shadow: inset 0 0 22px rgba(245, 158, 11, 0.55), 0 0 20px rgba(245, 158, 11, 0.3);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(0) scale(1.008);
+    background-color: rgba(16, 185, 129, 0.35);
+    box-shadow: inset 0 0 22px rgba(16, 185, 129, 0.5), 0 0 16px rgba(16, 185, 129, 0.35);
+  }
+  65% {
+    transform: scale(1);
+    background-color: rgba(245, 158, 11, 0.22);
+    box-shadow: inset 0 0 12px rgba(245, 158, 11, 0.3);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    background-color: rgba(245, 158, 11, 0.12);
+    box-shadow: none;
+  }
+}
+
+@keyframes rowItemFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseRecentGlow {
+  0%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.7));
+  }
+  50% {
+    opacity: 0.75;
+    filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.85));
+  }
+}
+
+.animate-table-fade-in {
+  animation: tableSmoothFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-row-recent {
+  animation: rowRecentHighlight 2.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-row-item {
+  animation: rowItemFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-pulse-glow {
+  animation: pulseRecentGlow 2.2s infinite ease-in-out;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+  }
+}
+

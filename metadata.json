@@ -1,0 +1,8 @@
+{
+  "name": "QUIZ DO GREG",
+  "description": "Plataforma de preparação e avaliação diagnóstica interativa para o Curso de Formação de Oficiais de Administração (CFOA PMPE) baseada no conteúdo programático oficial e legislação ALEPE.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
